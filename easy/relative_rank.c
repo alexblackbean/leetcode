@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 typedef struct heap{
     int index;
     int key;
@@ -69,39 +70,47 @@ void exchange(heap_t** array, int i1, int i2)
 char** Parsing(heap_t* score2, int size)
 {
     int name = 1;
-    char number[10001] ="";
+    char* number = calloc(10001, sizeof(char));
     char** string = malloc(sizeof(char*)*size);
+    for (int i = 0; i < size; i++)
+    {
+        string[i] = calloc(10001, sizeof(char));
+    }
     for (int i = size-1; i >= 1; i--)
     {
         heap_t node = score2[0];
         if (name == 1)
-            string[node.index] = "Gold Medal";
+            strcpy(string[node.index], "Gold Medal");
         else if (name == 2)
-            string[node.index] = "Silver Medal";
+            strcpy(string[node.index], "Silver Medal");
         else if (name == 3)
-            string[node.index] = "Bronze Medal";
+            strcpy(string[node.index], "Bronze Medal");
         else
         {
             sprintf(number,"%d", name);
-            string[node.index] = number;
+            strcpy(string[node.index], number);
         }
         name++;
         printf("index: %d, key: %d\n",node.index,node.key);
         exchange(&score2, 0, i);
         Heapify(&score2, --size, 0);
     }
-    // number[0] = (char)(name + 48);
-    // printf("%d\n",score2[0].index);
-    sprintf(number,"%d", name);
-    string[score2[0].index] = number;
-    // printf("%s\n", string[0]);
-    // for (int i = 1; i < size; i++)
-    //     printf("%s ",string[i]);
+    if (name == 1)
+        strcpy(string[score2[0].index], "Gold Medal");
+    else if (name == 2)
+        strcpy(string[score2[0].index], "Silver Medal");
+    else if (name == 3)
+        strcpy(string[score2[0].index], "Bronze Medal");
+    else
+    {
+        sprintf(number,"%d", name);
+        strcpy(string[score2[0].index], number);
+    }
     return string;
 }
 char ** findRelativeRanks(int* score, int scoreSize, int* returnSize) {
-    char** ans;
     char** ans2;
+    *returnSize = scoreSize;
     heap_t* score2 = malloc(sizeof(*score2)* scoreSize);
     for (int i = 0; i < scoreSize; i++)
     {
